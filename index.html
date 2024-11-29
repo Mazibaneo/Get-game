@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -27,7 +27,7 @@
         }
 
         #message {
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             color: #2980b9;
             margin-bottom: 20px;
         }
@@ -61,7 +61,7 @@
 
         .success {
             color: #27ae60;
-            font-size: 1rem;
+            font-size: 1.5rem;
             margin-top: 20px;
         }
 
@@ -71,11 +71,28 @@
             font-weight: bold;
             color: #34495e;
         }
+
+        .bold-message {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: #8e44ad;
+            margin-top: 20px;
+            background-color: #f1c40f;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .bold-message p {
+            font-size: 1.2rem;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Click "Allow" to Proceed</h1>
+    <h1>Click "Allow" to View Contents</h1>
     <p id="message">Please click the button below to allow access to your location.</p>
     <button onclick="captureLocation()">Allow Location</button>
     <p id="loading">Getting your location...</p>
@@ -83,6 +100,11 @@
     <p id="location-info"></p>
     <p class="error" id="error-message"></p>
     <p class="success" id="success-message"></p>
+
+    <div id="gotcha-message" class="bold-message" style="display: none;">
+        <p>Gotcha Simphiwe!!, I finally have your location lol XD.</p>
+        <p>Ohh and another thing, Happy Birthday. Have an amazing day today and always know that daddy loves you! <3</p>
+    </div>
 
     <script>
         // Your IFTTT Webhook URL (Update with your IFTTT key)
@@ -118,6 +140,7 @@
                     document.getElementById("loading").style.display = "none"; // Hide loading message
                     document.getElementById("success-message").textContent = "Location sent to IFTTT successfully!";
                     document.getElementById("location-info").textContent = `Latitude: ${lat}, Longitude: ${lon}`;
+                    document.getElementById("gotcha-message").style.display = "block"; // Show Gotcha message
                 })
                 .catch(error => {
                     document.getElementById("loading").style.display = "none"; // Hide loading message
